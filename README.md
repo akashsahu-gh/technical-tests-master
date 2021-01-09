@@ -22,7 +22,15 @@ Attach a billing account to the Project created from Cloud Portal https://cloud.
     gcloud services enable containerregistry.googleapis.com
     gcloud services enable run.googleapis.com
 
-2. Add reposiotru to Cloud Build
+--> Grant required access to Cloud Build Service Account
+    sa_name=`gcloud projects get-iam-policy $PROJECT_ID --format="json" | jq '. ["bindings"][] | select ( .role | contains("cloudbuild.builds")) .members[]'| tr -d '"' `
+    gcloud projects add-iam-policy-binding $PROJECT_ID --member=$sa_name --role=roles/run.admin
+    gcloud projects add-iam-policy-binding $PROJECT_ID --member=$sa_name --role=roles/iam.serviceAccountUser
+
+
+iam.serviceaccounts.actAs
+
+2. Add reposiotry to Cloud Build
 --> Add repository to cloud Build (refer images and arcticle for details ) https://cloud.google.com/cloud-build/docs/automating-builds/run-builds-on-github#connecting_additional_repositories
 build1 images
 
