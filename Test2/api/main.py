@@ -5,19 +5,29 @@ import os
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 
-sha_list=os.popen('git ls-remote https://github.com/akashsahu-gh/TechTest.git').readlines()
+sha_list=os.popen('git ls-remote https://github.com/akashsahu-gh/technical-tests-master.git').readlines()
 matching = [s for s in sha_list if "HEAD" in s]
 sha=str(matching[0]).replace('\tHEAD\n','')
 
-re =
-{
-"myApplication":
-[
+re={ "myApplication" : [ 
     {   'version': 0, 
-        "sha": sha,
-        "Description:": "Pre-interview technical test" }
-]
-}
+        "lastcommitsha": sha, 
+        "Description:": "Pre-interview technical test" 
+    }] 
+    }
+
+import base64
+import requests
+
+
+url = 'https://api.github.com/repos/{user}/{repo_name}/contents/{path_to_file}'
+req = requests.get(url)
+if req.status_code == requests.codes.ok:
+    req = req.json()
+    content = base64.decodestring(req['content'])
+else:
+    print('Content was not found.')
+
 
 @app.route('/', methods=['GET'])
 def home():
