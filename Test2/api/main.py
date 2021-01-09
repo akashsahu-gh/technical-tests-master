@@ -7,7 +7,7 @@ app = flask.Flask(__name__)
 #app.config["DEBUG"] = True
 
 #Get last sha commit from gitub repo
-sha=subprocess.check_output(['git', 'rev-parse', 'HEAD'])
+sha=subprocess.check_output(['git', 'rev-parse', 'HEAD']).replace('\n','')
 
 #Get application version from git commits
 repo_path = './'
