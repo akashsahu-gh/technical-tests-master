@@ -1,6 +1,10 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: [ 'build', '-t', 'gcr.io/abcd-2020/python_api', '-f', 'Test2/api/Dockerfile', '.' ]
+  args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/python_api:$COMMIT_SHA', '-f', 'Test2/api/Dockerfile', '.' ]
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/abcd-2020/python_api']
-  
+  args: ['push', 'gcr.io/$PROJECT_ID/python_api:$COMMIT_SHA']
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args: ['run', 'deploy', 'asahu-anz', '--image', 'gcr.io/$PROJECT_ID/python_api:$COMMIT_SHA', '--region', 'australia-southeast1-a', '--platform', 'managed']
+images:
+- 'gcr.io/$PROJECT_ID/python_api:$COMMIT_SHA'
