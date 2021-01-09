@@ -8,6 +8,7 @@ sudo docker run -d --name website -p 8000:8000 go-hello-wrld
 sudo docker run -it --rm -p 8000:8000 go-hello-wrld
 
 sudo docker build . -f dockerfile -t python_api
+sudo docker run -it --rm -p 8000:8000 python_api
 
 
 

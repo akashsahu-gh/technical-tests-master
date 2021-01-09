@@ -1,23 +1,21 @@
 import flask
 from flask import request, jsonify
-import os 
-import requests
+import git
+import subprocess
 
 app = flask.Flask(__name__)
 #app.config["DEBUG"] = True
 
-
 #Get last sha commit from gitub repo
-sha_list=os.popen('git ls-remote https://github.com/akashsahu-gh/technical-tests-master.git').readlines()
-matching = [s for s in sha_list if "HEAD" in s]
-sha=str(matching[0]).replace('\tHEAD\n','')
+sha=subprocess.check_output(['git', 'rev-parse', 'HEAD'])
 
-#Get application version from file stored in github
-url = 'https://raw.githubusercontent.com/akashsahu-gh/technical-tests-master/master/Test2/api/app_version'
-content=requests.get(url).content
+#Get application version from git commits
+repo_path = './'
+repo = git.Repo(repo_path)
+version = repo.git.rev_list('--count', 'HEAD')
 
 result={ "myApplication" : [ 
-    {   'version': content, 
+    {   'version': version, 
         "lastcommitsha": sha, 
         "Description:": "Pre-interview technical test" 
     }] 
