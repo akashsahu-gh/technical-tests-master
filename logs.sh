@@ -7,6 +7,9 @@ sudo docker run -d --name website -p 8000:8000 go-hello-wrld
 
 sudo docker run -it --rm -p 8000:8000 go-hello-wrld
 
+sudo docker build . -f dockerfile -t python_api
+
+
 
 Sending build context to Docker daemon 6.144 kB
 Step 1/9 : FROM golang:alpine
