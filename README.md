@@ -20,7 +20,7 @@ Attach a billing account to the Project created from Cloud Portal https://cloud.
 --> Enable API services 
     gcloud services enable cloudbuild.googleapis.com
     gcloud services enable containerregistry.googleapis.com
-    gcloud services enable compute.googleapis.com
+    gcloud services enable run.googleapis.com
 
 2. Add reposiotru to Cloud Build
 --> Add repository to cloud Build (refer images and arcticle for details ) https://cloud.google.com/cloud-build/docs/automating-builds/run-builds-on-github#connecting_additional_repositories
