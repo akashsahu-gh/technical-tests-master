@@ -2,7 +2,18 @@
 Updated Dockerfile at https://github.com/akashsahu-gh/technical-tests-master/blob/master/Test1/Dockerfile
 
 # Test 2:
-Application program is written in Python language and CI Setup is done in Google Cloud Platform project
+Application program is written in Python language and CI Setup is done in Google Cloud Platform project.
+Below GCP services are used to setup Application
+    1. Cloud Build --> To create image and run via Cloud run 
+    2. Container Registry --> To store application docker image 
+    3. Cloud Run --> Run the application image in CI/CD setup with every new commit in GitBranch. 
+
+For CI/CD below actions will be taken by Cloud Build as soon as commit/push has happened in GitHub Branch.
+    1. Create new Docker Container image
+    2. Push Container image to Google Container Registry
+    3. Cloud Run will run another revision for container image and traffic will be slowly diverted to new revision and old revision will be stopped.
+
+Note: By Default, Cloud Run will have Authentication enabled therefore no public access. Authentication can be disabled which will make URL accessible to public internet
 
 # Steps to setup application in a GCP Project 
 1. Create Project & Enable api's via CloudShell 
@@ -27,22 +38,36 @@ Attach a billing account to the Project created from Cloud Portal https://cloud.
     gcloud projects add-iam-policy-binding $PROJECT_ID --member=$sa_name --role=roles/run.admin
     gcloud projects add-iam-policy-binding $PROJECT_ID --member=$sa_name --role=roles/iam.serviceAccountUser
 
-
-iam.serviceaccounts.actAs
-
-2. Add reposiotry to Cloud Build
---> Add repository to cloud Build (refer images and arcticle for details ) https://cloud.google.com/cloud-build/docs/automating-builds/run-builds-on-github#connecting_additional_repositories
-build1 images
+![alt text](https://github.com/akashsahu-gh/technical-tests-master/blob/master/images/runbook_snippet1.PNG)
+![alt text](https://github.com/akashsahu-gh/technical-tests-master/blob/master/images/runbook_snippet2.PNG)
 
 
+2. Add repository to Cloud Build
+--> Add repository to cloud Build:  https://cloud.google.com/cloud-build/docs/automating-builds/run-builds-on-github#connecting_additional_repositories
+
+Repository URL to be added: https://github.com/akashsahu-gh/technical-tests-master.git
+You would need any github creds to basically add the Repo in Cloud Build.
+
+Go to --> GCP Console --> Cloud Build --> Triggers --> Connect Repository 
+
+![alt text](https://github.com/akashsahu-gh/technical-tests-master/blob/master/images/build1.PNG)
+![alt text](https://github.com/akashsahu-gh/technical-tests-master/blob/master/images/build2.PNG)
+![alt text](https://github.com/akashsahu-gh/technical-tests-master/blob/master/images/build3.PNG)
 
 
 
-1. Create a Service account with Project Owner privs to be used by terraform to provision "Cloud Run", which will host our docker image of application.
-3. Add GitHub repo to Cloud Build 
+3. Deploy build trigger in Cloud Build 
+Go to --> GCP Console --> Cloud Build --> Triggers --> Create Trigger
 
-create docker image
-push docker image to google container registry 
-create cloud run service via terraform 
+Name: anz-test
+Event: Push to a Branch
+Source: Select the repo added in Step 2
+FileType: Leave to Autodetected
 
-# Steps to setup CI for Applilcation in GCP Project
+![alt text](https://github.com/akashsahu-gh/technical-tests-master/blob/master/images/trigger1.PNG)
+![alt text](https://github.com/akashsahu-gh/technical-tests-master/blob/master/images/trigger2.PNG)
+
+
+Run/Commit the branch to trigger the Build. 
+
+![alt text](https://github.com/akashsahu-gh/technical-tests-master/blob/master/images/trigger2.PNG)
