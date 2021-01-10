@@ -5,6 +5,8 @@ steps:
   args: ['push', 'gcr.io/$PROJECT_ID/python_api:$COMMIT_SHA']
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: gcloud
-  args: ['run', 'deploy', 'asahu-anz', '--image', 'gcr.io/$PROJECT_ID/python_api:$COMMIT_SHA', '--region', 'australia-southeast1', '--platform', 'managed']
+  args: ['run', 'deploy', 'asahu-anz', '--image', 'gcr.io/$PROJECT_ID/python_api:$COMMIT_SHA', '--region', 'australia-southeast1', '--platform', 'managed'
+  ,'--allow-unauthenticated'
+  ]
 images:
 - 'gcr.io/$PROJECT_ID/python_api:$COMMIT_SHA'

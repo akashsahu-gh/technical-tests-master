@@ -4,16 +4,17 @@ Updated Dockerfile at https://github.com/akashsahu-gh/technical-tests-master/blo
 # Test 2:
 Application program is written in Python language and CI Setup is done in Google Cloud Platform project.
 Below GCP services are used to setup Application
-    1. Cloud Build --> To create image and run via Cloud run 
-    2. Container Registry --> To store application docker image 
-    3. Cloud Run --> Run the application image in CI/CD setup with every new commit in GitBranch. 
+1. Cloud Build --> To create image and run via Cloud run 
+2. Container Registry --> To store application docker image 
+3. Cloud Run --> Run the application image in CI/CD setup with every new commit in GitBranch. 
 
 For CI/CD below actions will be taken by Cloud Build as soon as commit/push has happened in GitHub Branch.
-    1. Create new Docker Container image
-    2. Push Container image to Google Container Registry
-    3. Cloud Run will run another revision for container image and traffic will be slowly diverted to new revision and old revision will be stopped.
+1. Create new Docker Container image
+2. Push Container image to Google Container Registry
+3. Cloud Run will run another revision for container image and traffic will be slowly diverted to new revision and old revision will be stopped.
 
-Note: By Default, Cloud Run will have Authentication enabled therefore no public access. Authentication can be disabled which will make URL accessible to public internet
+Note: By Default, Cloud Run will have Authentication enabled via IAM therefore no public access. Authentication can be disabled which will make URL accessible to public internet. 
+
 
 # Steps to setup application in a GCP Project 
 1. Create Project & Enable api's via CloudShell 
@@ -55,7 +56,6 @@ Go to --> GCP Console --> Cloud Build --> Triggers --> Connect Repository
 ![alt text](https://github.com/akashsahu-gh/technical-tests-master/blob/master/images/build3.PNG)
 
 
-
 3. Deploy build trigger in Cloud Build 
 Go to --> GCP Console --> Cloud Build --> Triggers --> Create Trigger
 
@@ -71,3 +71,20 @@ FileType: Leave to Autodetected
 Run/Commit the branch to trigger the Build. 
 
 ![alt text](https://github.com/akashsahu-gh/technical-tests-master/blob/master/images/trigger2.PNG)
+
+
+# Access the application via curl command from gcloud 
+
+SERVICE_URL=`gcloud run services list --platform managed --format="value(URL)"`
+curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" $SERVICE_URL
+curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" $SERVICE_URL/api/version
+
+![alt text](https://github.com/akashsahu-gh/technical-tests-master/blob/master/images/final_op1.PNG)
+
+
+# Enable public access,perform any of the below steps
+
+1. Uncomment (,'--allow-unauthenticated' ) from cloudbuild.yaml file in repo https://github.com/akashsahu-gh/technical-tests-master/blob/master/cloudbuild.yaml
+2. Grant all users access to Cloud Run invoker role 
+    SERVICE_NAME=`gcloud run services list --platform managed --format="value(SERVICE)"`
+    gcloud run services add-iam-policy-binding $SERVICE_NAME --platform managed --member="allUsers" --role="roles/run.invoker" --region australia-southeast1
